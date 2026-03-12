@@ -1,6 +1,6 @@
 # ⚡ Explain & Decide
 
-A Chrome Extension that instantly explains confusing text on any webpage — contracts, emails, notices, terms & conditions — right in a sidebar. No tab switching, no copy-pasting, no back-and-forth.
+A Chrome Extension that instantly explains confusing text on any webpage - contracts, emails, notices, terms & conditions - right in a sidebar. No tab switching, no copy-pasting, no back-and-forth.
 
 ---
 
@@ -16,7 +16,7 @@ You're reading something online and you don't fully understand it. The old flow:
 
 ## The Solution
 
-Click the extension icon — a sidebar slides in. Paste any text or analyze the current page and get a structured breakdown instantly:
+Click the extension icon - a sidebar slides in. Paste any text or analyze the current page and get a structured breakdown instantly:
 
 | | |
 |---|---|
@@ -29,25 +29,25 @@ Click the extension icon — a sidebar slides in. Paste any text or analyze the 
 
 ## Features
 
-- **Persistent sidebar** — slides in from the right, stays open while you browse
-- **Resizable** — drag the left edge to adjust width (300px–600px)
-- **Analyze tab** — paste any text and get an instant breakdown
-- **Explain this page** — smart content detection (article → main → body)
-- **Right-click menu** — select text on any page → right-click → Explain & Decide
-- **Copy summary** — one click to copy the full breakdown
-- **Settings tab** — guided API key setup with step-by-step onboarding
-- **Invalid key detection** — auto-redirects to settings with clear error message
-- **Cream theme** — easy on the eyes, doesn't clash with page content
+- **Persistent sidebar** - slides in from the right, stays open while you browse
+- **Resizable** - drag the left edge to adjust width (300px–600px)
+- **Analyze tab** - paste any text and get an instant breakdown
+- **Explain this page** - smart content detection (article → main → body)
+- **Right-click menu** - select text on any page → right-click → Explain & Decide
+- **Copy summary** - one click to copy the full breakdown
+- **Settings tab** - guided API key setup with step-by-step onboarding
+- **Invalid key detection** - auto-redirects to settings with clear error message
+- **Cream theme** - easy on the eyes, doesn't clash with page content
 
 ---
 
 ## Tech Stack
 
-- **React 18 + TypeScript** — sidebar UI
-- **Vite** — dual build (ES module for popup/background, IIFE for content script)
-- **Chrome Manifest V3** — service worker, content scripts, context menus, scripting API
-- **Groq API** — llama-3.3-70b-versatile (free tier, fast inference)
-- **chrome.storage.sync** — secure API key storage
+- **React 18 + TypeScript** - sidebar UI
+- **Vite** - dual build (ES module for popup/background, IIFE for content script)
+- **Chrome Manifest V3** - service worker, content scripts, context menus, scripting API
+- **Groq API** - llama-3.3-70b-versatile (free tier, fast inference)
+- **chrome.storage.sync** - secure API key storage
 
 ---
 
@@ -58,7 +58,7 @@ Extension icon click
         ↓
 Popup fires TOGGLE_SIDEBAR → background.js forwards to active tab
         ↓
-content.tsx (content script) — mounts React sidebar on page
+content.tsx (content script) - mounts React sidebar on page
         ↓
 User pastes text / clicks "Explain this page"
         ↓
@@ -93,8 +93,8 @@ npm run build
 ```
 
 This runs two Vite builds:
-- Main build (popup + background) — ES module format
-- Content build — IIFE format (required for Chrome content scripts)
+- Main build (popup + background) - ES module format
+- Content build - IIFE format (required for Chrome content scripts)
 
 ### 4. Load in Chrome
 
@@ -105,10 +105,10 @@ This runs two Vite builds:
 
 ### 5. Add your Groq API key
 
-1. Click the extension icon — sidebar opens
+1. Click the extension icon - sidebar opens
 2. Go to **Settings** tab
 3. Get a free key at [console.groq.com](https://console.groq.com) → API Keys → Create
-4. Paste and save — you're ready
+4. Paste and save - you're ready
 
 ---
 
@@ -117,18 +117,18 @@ This runs two Vite builds:
 ```
 src/
 ├── background/
-│   └── background.ts         # Service worker — Groq API proxy, context menus
+│   └── background.ts         # Service worker - Groq API proxy, context menus
 ├── content/
 │   ├── content.tsx           # Mounts React sidebar, bridges chrome messages
 │   └── content.css           # Host container styles
 ├── sidebar/
-│   ├── SidebarApp.tsx        # Root — state, message handling, layout
+│   ├── SidebarApp.tsx        # Root - state, message handling, layout
 │   ├── AnalyzeTab.tsx        # Idle / loading / error views
 │   ├── ResultView.tsx        # Result cards + copy/new actions
 │   ├── SettingsTab.tsx       # API key setup + onboarding
 │   ├── types.ts              # Shared types + style constants
 │   └── sidebar.tsx           # React entry point
-├── App.tsx                   # Popup — fires sidebar toggle
+├── App.tsx                   # Popup - fires sidebar toggle
 ├── theme.ts                  # Category icons + complexity colors
 └── types.ts                  # Shared TypeScript interfaces
 ```
@@ -137,5 +137,5 @@ src/
 
 ## Built By
 
-**Shraddha Gaikwad** — Frontend Engineer  
+**Shraddha Gaikwad** - Frontend Engineer  
 [LinkedIn](https://www.linkedin.com/in/shraddha-3010/)
