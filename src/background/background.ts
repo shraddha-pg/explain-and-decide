@@ -36,32 +36,10 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   // Popup asks background to forward a message to the active tab
   // Background stays alive so the message actually gets delivered
   if (message.type === "FORWARD_TO_TAB") {
-    console.log("FORWARD_TO_TAB received");
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       const tabId = tabs[0]?.id;
-      console.log("tabId:", tabId);
       if (!tabId) return;
-
-      chrome.scripting
-        .executeScript({
-          target: { tabId },
-          files: ["content.js"],
-        })
-        .then(() => {
-          console.log("Script injected successfully");
-          setTimeout(() => {
-            chrome.tabs
-              .sendMessage(tabId, { type: message.forward })
-              .then(() => console.log("Message sent OK"))
-              .catch((err) => console.log("Send failed:", err.message));
-          }, 200);
-        })
-        .catch((err) => {
-          console.log("Inject failed:", err.message);
-          chrome.tabs
-            .sendMessage(tabId, { type: message.forward })
-            .catch((e) => console.log("Fallback also failed:", e.message));
-        });
+      chrome.tabs.sendMessage(tabId, { type: message.forward }).catch(() => {});
     });
     return false;
   }
@@ -101,6 +79,8 @@ Be direct. Be honest. Warn about red flags. Don't sugarcoat.`,
             ],
           }),
         });
+
+        if (res.status === 401) { sendResponse({ error: "INVALID_API_KEY" }); return; }
 
         const data = await res.json();
         const raw = data.choices?.[0]?.message?.content ?? "";

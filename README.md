@@ -1,16 +1,14 @@
 # ⚡ Explain & Decide
 
-A Chrome Extension that instantly explains confusing text on any webpage — no tab switching, no copy-pasting, no back-and-forth with AI.
-
-Select any text or open on any page → get **what it says, what it wants, red flags, and what you should do** — in one click.
+A Chrome Extension that instantly explains confusing text on any webpage — contracts, emails, notices, terms & conditions — right in a sidebar. No tab switching, no copy-pasting, no back-and-forth.
 
 ---
 
 ## The Problem
 
-You're reading something online — a contract, job offer, government notice, terms & conditions, email — and you don't fully understand it. The old flow:
+You're reading something online and you don't fully understand it. The old flow:
 
-> Copy → Open ChatGPT → Paste → Explain → Back and forth → Finally decide
+> Copy → Open ChatGPT → Paste → Wait → Decipher → Back and forth → Finally decide
 
 **That's 10 steps for something that should take 1.**
 
@@ -18,7 +16,7 @@ You're reading something online — a contract, job offer, government notice, te
 
 ## The Solution
 
-Explain & Decide sits on every webpage. One click and you get a structured breakdown:
+Click the extension icon — a sidebar slides in. Paste any text or analyze the current page and get a structured breakdown instantly:
 
 | | |
 |---|---|
@@ -31,21 +29,23 @@ Explain & Decide sits on every webpage. One click and you get a structured break
 
 ## Features
 
-- **Popup** — paste any text and analyze directly
-- **Explain this page** — smart content detection, not raw DOM scrape
-- **Sidebar** — slides in from the right, page stays open
-- **Right-click menu** — select text → right-click → Explain & Decide
+- **Persistent sidebar** — slides in from the right, stays open while you browse
+- **Resizable** — drag the left edge to adjust width (300px–600px)
+- **Analyze tab** — paste any text and get an instant breakdown
+- **Explain this page** — smart content detection (article → main → body)
+- **Right-click menu** — select text on any page → right-click → Explain & Decide
 - **Copy summary** — one click to copy the full breakdown
-- **Onboarding flow** — guided API key setup on first launch
-- **Cream/off-white theme** — easy on the eyes
+- **Settings tab** — guided API key setup with step-by-step onboarding
+- **Invalid key detection** — auto-redirects to settings with clear error message
+- **Cream theme** — easy on the eyes, doesn't clash with page content
 
 ---
 
 ## Tech Stack
 
-- **React 18 + TypeScript** — popup UI
-- **Vite** — build tool
-- **Chrome Manifest V3** — service worker, content scripts, context menus
+- **React 18 + TypeScript** — sidebar UI
+- **Vite** — dual build (ES module for popup/background, IIFE for content script)
+- **Chrome Manifest V3** — service worker, content scripts, context menus, scripting API
 - **Groq API** — llama-3.3-70b-versatile (free tier, fast inference)
 - **chrome.storage.sync** — secure API key storage
 
@@ -54,15 +54,19 @@ Explain & Decide sits on every webpage. One click and you get a structured break
 ## Architecture
 
 ```
-User Action (popup / right-click / sidebar button)
+Extension icon click
         ↓
-Popup (React) OR Content Script (sidebar on page)
+Popup fires TOGGLE_SIDEBAR → background.js forwards to active tab
         ↓
-background.js (Service Worker) — proxies API call
+content.tsx (content script) — mounts React sidebar on page
+        ↓
+User pastes text / clicks "Explain this page"
+        ↓
+SidebarApp → CALL_GROQ message → background.js (service worker)
         ↓
 Groq API → llama-3.3-70b-versatile
         ↓
-Structured JSON → 4 result cards rendered
+Structured JSON → 4 result cards
 ```
 
 ---
@@ -88,19 +92,23 @@ npm install
 npm run build
 ```
 
+This runs two Vite builds:
+- Main build (popup + background) — ES module format
+- Content build — IIFE format (required for Chrome content scripts)
+
 ### 4. Load in Chrome
 
 1. Open `chrome://extensions`
-2. Enable **Developer Mode** (top right)
+2. Enable **Developer Mode** (top right toggle)
 3. Click **Load unpacked**
-4. Select the `dist` folder
+4. Select the `dist/` folder
 
 ### 5. Add your Groq API key
 
-1. Click the extension icon in Chrome toolbar
+1. Click the extension icon — sidebar opens
 2. Go to **Settings** tab
 3. Get a free key at [console.groq.com](https://console.groq.com) → API Keys → Create
-4. Paste and save
+4. Paste and save — you're ready
 
 ---
 
@@ -109,20 +117,20 @@ npm run build
 ```
 src/
 ├── background/
-│   └── background.ts        # Service worker — API proxy, context menus
+│   └── background.ts         # Service worker — Groq API proxy, context menus
 ├── content/
-│   ├── content.ts           # Sidebar injection, page analysis
-│   └── content.css          # Sidebar styles
-├── components/
-│   ├── AnalyzeTab.tsx        # Main analyze UI
-│   ├── AnalysisResultView.tsx # Result cards display
-│   ├── ResultCard.tsx        # Single reusable card
-│   ├── SettingsTab.tsx       # API key + onboarding
-│   ├── Loading.tsx           # Spinner
-│   └── ErrorMessage.tsx      # Error display
-├── App.tsx                  # Root — header + tab routing
-├── theme.ts                 # Central theme/colors
-└── types.ts                 # Shared TypeScript interfaces
+│   ├── content.tsx           # Mounts React sidebar, bridges chrome messages
+│   └── content.css           # Host container styles
+├── sidebar/
+│   ├── SidebarApp.tsx        # Root — state, message handling, layout
+│   ├── AnalyzeTab.tsx        # Idle / loading / error views
+│   ├── ResultView.tsx        # Result cards + copy/new actions
+│   ├── SettingsTab.tsx       # API key setup + onboarding
+│   ├── types.ts              # Shared types + style constants
+│   └── sidebar.tsx           # React entry point
+├── App.tsx                   # Popup — fires sidebar toggle
+├── theme.ts                  # Category icons + complexity colors
+└── types.ts                  # Shared TypeScript interfaces
 ```
 
 ---
