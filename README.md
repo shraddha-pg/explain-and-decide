@@ -71,16 +71,10 @@ Structured JSON → 4 result cards
 
 ---
 
-## Screenshots
+## Screenshot
 
 ### In action - analyzing a page
 ![Explain & Decide analyzing a Redux documentation page](./images/sidebar-result.png)
-
-### First-time setup
-![One-time API key setup screen](./images/onboarding.png)
-
-### Settings - API key saved
-![Settings tab with saved API key](./images/settings.png)
 
 ## Getting Started
 
